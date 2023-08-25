@@ -1,11 +1,499 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Date converter"/>
+  <meta charset="utf-8">
+  <title>تبدیل تاریخ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Ehsan Heydari">
+  <script src="asset/js/jquery/jquery-3.5.1.min.js"></script>
+  <script src="asset/js/jalalidatepicker/jalalidatepicker.min.js"></script>
+  <script src="converter.js" type="text/javascript" charset="utf-8"></script>
+  <link rel="stylesheet" href="asset/css/jalalidatepicker/jalalidatepicker.min.css">
+
+  <style>
+  
+	  @font-face{
+		font-family: irsans;
+		src: url('file:///android_asset/asset/font/iransansxregular.ttf');
+	}
+
+    * {
+      font-family: irsans, IRANSansFaNum, iransans, "Times New Roman", "Droid Sans";
+
+    }
+.spanfooter{
+    top: 10px;
+    position: relative;
+    text-align: center;
+}
+
+	.footer{
+	background-color: #481949;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    margin: auto;
+    text-align: center;
+    right: 0;
+    color: #ffffff;
+	    font-weight: 100;
+		height: 44px;
+	}
+
+    body {
+      background-color: #F5F5F5;
+      overflow: hidden;
+      direction: rtl;
+      text-align: center;
+      font-family: irsans,  IRANSansFaNum, iransans;
+      font-weight: bold;
+    }
+
+
+
+    button {
+      cursor: pointer;
+    }
+
+
+    input {
+      padding: 5px;
+      font-weight: bold;
+    }
+
+    .container-body {
+
+      width: max-content;
+      margin: auto;
+    }
+
+    .title1 {
+      margin-top: -39px;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .title2 {
+      margin-top: -39px;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    
+    
+    .title3 {
+      margin-top: -39px;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+
+button {
+    padding: 7px 15px;
+}
+
+
+    .block {
+      width: 270px;
+      height: 150px;
+      padding: 10px;
+      margin: 10px;
+      background-color: #FFFFFF;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px #ddd;
+    }
+
+    .block-jalali {
+      border: 1px solid #000000;
+      border-top: 34px solid #00897B;
+
+    }
+
+    .block-shamsi {
+      border: 1px solid #008939;
+      border-top: 34px solid #008939;
+    }
+    
+    .block-today {
+      border: 1px solid #000000;
+      border-top: 34px solid #005d8a;
+      height: 60px;
+
+    }
+
+    .inline-block {
+      display: inline-block;
+    }
+
+    .block-result-jalali {
+    }
+
+    .block-result-shamsi {
+    }
+
+    .tac{
+      text-align: center;
+    }
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+  </style>
+
 </head>
-<body style="font-family: monospace">
-    REPLACE THIS FILE WITH YOUR OWN INDEX.HTML
+
+
+<div class="container-body rtl " style="margin-top: 60px;">
+
+  <div class="container block block-jalali " style="">
+    <div class="title1">شمسی به میلادی</div>
+    <input type="text" id="jalalidate" placeholder="فرمت صحیح 1402/04/23" data-jdp>
+    <button onclick="convertFromJalali2Gregorian()" id="convertBtnToGreg">تبدیل</button>
+    <div style="padding: 5px; margin: 5px;">
+      <div><span id="d-from-jalali"></span></div>
+      <div><span id="m-from-jalali"></span></div>
+      <div><span id="dName-from-jalali"></span></div>
+    </div>
+  </div>
+
+  <div class="container block block-shamsi " style="">
+    <div class="title2">میلادی به شمسی</div>
+    <input style="direction: ltr" type="text" id="gregoriandate" placeholder="2023-07-27 فرمت صحیح" >
+    <button onclick="convertFromGregorian2Jalali()" id="convertBtnToJalali">Convert</button>
+    <div style="padding: 5px; margin: 5px;">
+      <div><span id="d-from-greg"></span></div>
+      <div><span id="m-from-greg"></span></div>
+      <div><span id="dName-from-greg"></span></div>
+    </div>
+  </div>
+
+  <div class="container block block-today " style="direction: ltr;">
+    <div class="title3">امروز</div>
+    <div style="padding: 5px; margin: 5px;">
+      <div id="todayM" style="color: #AD1457;"></div>
+      <div id="todayJ" style="color: #545fb1;"></div>
+    </div>
+  </div>
+
+<a href="https://uncogeek.ir" target="_self"><div class="footer"><span class="spanfooter"> Made by UncoGeek.ir &#9776; </span></div></a>
+</div>
+
+<button onclick="cleaner()">&#10007; پاک کردن ورودی ها</button>
+<button id="myBtn">&#9990; درباره برنامه</button><br>
+<img src="asset/img/black-logo.png" width='220' onclick="window.location.href='https://uncogeek.ir'">
+
+
+
+
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content" style="direction: ltr;">
+    <span class="close">&times;</span>
+    <p>توسعه نرم افزار: احسان حیدری</p>
+    <p>http://uncogeek.ir</p>
+    <p>@UncoGeek شبکه های اجتماعی</p>
+  </div>
+
+</div>
+
+
+
+<script>
+
+
+function cleaner(){
+$("#gregoriandate, #jalalidate").val("");
+$("#d-from-jalali, #m-from-jalali , #dName-from-jalali, #d-from-greg, #m-from-greg, #dName-from-greg").html("");
+}
+
+  $(function (){
+
+
+    jalaliDatepicker.startWatch({
+      separatorChar: "/",
+      minDate: "attr",
+      maxDate: "attr",
+      changeMonthRotateYear: true,
+      showTodayBtn: true,
+      showEmptyBtn: true,
+      useDropDownYears: true
+    });
+  });
+  
+  
+$(function(){
+    //today
+    ndt=new Date();
+    g_y=ndt.getFullYear();
+    g_m=ndt.getMonth()+1;
+    g_d=ndt.getDate();
+    var today = g_y+'/'+g_m+'/'+g_d;
+
+    const d = new Date();
+
+
+  $("#todayM").html(" " + g_y + "-"  + g_m+'-'+g_d + "  "  +  monthNamesGreg[d.getMonth()] + " <i>"  + getDayName(g_d, "en-EN") + "</i> " );
+    convertFromGregorian2JalaliToday(today);
+});
+
+  const monthNamesGreg = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+
+
+
+  const monthNamesJalali = ["فروردین",
+    "اردیبهشت",
+    "خرداد",
+    "تیر",
+    "مرداد",
+    "شهریور",
+    "مهر",
+    "آبان",
+    "آذر",
+    "دی",
+    "بهمن",
+    "اسفند"
+  ];
+
+/*
+  $(document).keyup(function(e) {
+
+    //today
+    ndt=new Date();
+    g_y=ndt.getFullYear();
+    g_m=ndt.getMonth()+1;
+    g_d=ndt.getDate();
+    var today = g_y+'/'+g_m+'/'+g_d;
+
+    const d = new Date();
+
+
+  $("#todayM").html(g_y+'/'+g_m+'/'+g_d + "  " + monthNamesGreg[d.getMonth()]);
+    convertFromGregorian2JalaliToday(today);
+
+    // document.write("The current month is " + monthNames[d.getMonth()]);
+
+  });
+*/
+
+  $(document).keyup(function(e) {
+    if (e.key === "Escape") { // escape key maps to keycode `27`
+      $("#gregoriandate, #jalalidate").val("");
+
+
+    }
+  });
+
+  function convertFromJalali2Gregorian() {
+    var dateJalali = $("#jalalidate").val();
+    var arr1 = dateJalali.split('/');
+    var yearJ = parseInt(arr1[0]);
+    var yearM = parseInt(arr1[1]);
+    var yearD = parseInt(arr1[2]);
+    var convertedToJalali =jalali_to_gregorian(yearJ,yearM,yearD);
+    var final = finalizeGregForPrint(convertedToJalali);
+    var finalGreg = finalizeGregForPrintDash(convertedToJalali);
+    $("#gregoriandate").val(finalGreg);
+    $("#d-from-jalali").html(finalGreg);
+    $("#m-from-jalali").html(monthNamesGreg[yearM]);
+	
+		var dateStr = final;
+	var day = getDayName(dateStr, "en-EN");
+	
+    $("#dName-from-jalali").html(day);
+		
+  }
+
+
+  function convertFromGregorian2Jalali() {
+    var dateGreg = $("#gregoriandate").val();
+    var arr1 = dateGreg.split('-');
+    var yearJ = parseInt(arr1[0]);
+    var yearM = parseInt(arr1[1]);
+    var yearD = parseInt(arr1[2]);
+    var converted =gregorian_to_jalali(yearJ,yearM,yearD);
+    $("#m-from-greg").html(monthNamesJalali[converted[1]]);		
+    var final = finalizeGregForPrint(converted);
+    $("#jalalidate").val(final);
+    $("#d-from-greg").html(final);
+	var dateStr = arr1;
+	var day = getDayName(dateStr, "fa-FA");
+    $("#dName-from-greg").html(day);
+	convertFromJalali2Gregorian();
+	
+	
+  }
+
+  function convertFromGregorian2JalaliToday(today) {
+    var dateGreg = today;
+    var arr1 = dateGreg.split('/');
+    var yearJ = parseInt(arr1[0]);
+    var yearM = parseInt(arr1[1]);
+    var yearD = parseInt(arr1[2]);
+    var converted =gregorian_to_jalali(yearJ,yearM,yearD);
+    var final = finalizeGregForPrint(converted);
+	var day = getDayName(yearD, "fa-FA");
+	
+    $("#todayJ").html( day + " " +  final) ;
+  }
+
+
+
+  function finalizeGregForPrint(gdate){
+    var year = gdate[0];
+    var month = gdate[1];
+    var day = gdate[2];
+    var date = year + "/" + month + "/" + day;
+    return date;
+  }
+  
+    function finalizeGregForPrintDash(gdate){
+    var year = gdate[0];
+    var month = gdate[1];
+    var day = gdate[2];
+    var date = year + "-" + month + "-" + day;
+    return date;
+
+
+  }
+
+  /**  Gregorian & Jalali (Hijri_Shamsi,Solar) Date Converter Functions
+   Author: JDF.SCR.IR =>> Download Full Version :  http://jdf.scr.ir/jdf
+   License: GNU/LGPL _ Open Source & Free :: Version: 2.81 : [2020=1399]
+   ---------------------------------------------------------------------
+   355746=361590-5844 & 361590=(30*33*365)+(30*8) & 5844=(16*365)+(16/4)
+   355666=355746-79-1 & 355668=355746-79+1 &  1595=605+990 &  605=621-16
+   990=30*33 & 12053=(365*33)+(32/4) & 36524=(365*100)+(100/4)-(100/100)
+   1461=(365*4)+(4/4) & 146097=(365*400)+(400/4)-(400/100)+(400/400)  */
+
+  function gregorian_to_jalali(gy, gm, gd) {
+    var g_d_m, jy, jm, jd, gy2, days;
+    g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    gy2 = (gm > 2) ? (gy + 1) : gy;
+    days = 355666 + (365 * gy) + ~~((gy2 + 3) / 4) - ~~((gy2 + 99) / 100) + ~~((gy2 + 399) / 400) + gd + g_d_m[gm - 1];
+    jy = -1595 + (33 * ~~(days / 12053));
+    days %= 12053;
+    jy += 4 * ~~(days / 1461);
+    days %= 1461;
+    if (days > 365) {
+      jy += ~~((days - 1) / 365);
+      days = (days - 1) % 365;
+    }
+    if (days < 186) {
+      jm = 1 + ~~(days / 31);
+      jd = 1 + (days % 31);
+    } else {
+      jm = 7 + ~~((days - 186) / 30);
+      jd = 1 + ((days - 186) % 30);
+    }
+    return [jy, jm, jd];
+  }
+
+  function jalali_to_gregorian(jy, jm, jd) {
+    var sal_a, gy, gm, gd, days;
+    jy += 1595;
+    days = -355668 + (365 * jy) + (~~(jy / 33) * 8) + ~~(((jy % 33) + 3) / 4) + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
+    gy = 400 * ~~(days / 146097);
+    days %= 146097;
+    if (days > 36524) {
+      gy += 100 * ~~(--days / 36524);
+      days %= 36524;
+      if (days >= 365) days++;
+    }
+    gy += 4 * ~~(days / 1461);
+    days %= 1461;
+    if (days > 365) {
+      gy += ~~((days - 1) / 365);
+      days = (days - 1) % 365;
+    }
+    gd = days + 1;
+    sal_a = [0, 31, ((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    for (gm = 0; gm < 13 && gd > sal_a[gm]; gm++) gd -= sal_a[gm];
+    return [gy, gm, gd];
+  }
+
+
+
+function getDayName(dateStr, locale)
+{
+    var date = new Date(dateStr);
+    return date.toLocaleDateString(locale, { weekday: 'long' });        
+}
+
+
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+</script>
+
 </body>
 </html>
