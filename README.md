@@ -1,33 +1,12 @@
-This is a template project for Android Studio that allows you to create an android webview application in minutes. You can use it to create a simple app for your website or as a starting point for your HTML5 based android app.
+simple android date converter app from Jalali to Gregorian
 
-### Getting started
+
+### Screenshots
+![Screenshot1](https://uncogeek.ir/wp-content/uploads/2023/07/jalali-date-convertor-780x458.png)
+![Screenshot2](https://uncogeek.ir/wp-content/uploads/2023/07/jalali-date-convertor-2-1.png)
+
+
+### Developed from
 
 [Download](https://github.com/slymax/webview/archive/master.zip) or clone this repository and import it into Android Studio.
 
-### Using a remote source
-
-If you want to create an app that shows the content of a remote website
-
-1. uncomment line **24** in `MainActivity.java` and replace `https://example.com` with your url
-
-	```java
-	mWebView.loadUrl("https://example.com");
-	```
-
-2. open the `MyWebViewClient.java` file and replace `example.com` on line **15** with your hostname
-
-	```java
-	hostname = "example.com";
-	```
-
-### Using a local source
-
-If you want to create a local HTML5 android app
-
-1. uncomment line **27** in `MainActivity.java`
-
-	```java
-	mWebView.loadUrl("file:///android_asset/index.html");
-	```
-
-2. put all your files (including your `index.html`) in the `assets` directory
